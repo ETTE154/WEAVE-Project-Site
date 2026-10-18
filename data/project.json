@@ -10,14 +10,14 @@
     "updatedAt": "2026-10-02",
     "updatedAtLabel": "페이지 자료 정리일",
     "baselineDate": "2026-09-29",
-    "progressBasis": "초기 관리 기준으로 등록한 12개 마일스톤을 동일 가중치로 계산합니다. 완료 마일스톤 수 ÷ 전체 마일스톤 수이며, 연구 전체의 검증된 공정률 또는 성능 지표를 뜻하지 않습니다. 디지털 설계와 실물 검증은 별도 완료 기준입니다.",
+    "progressBasis": "4개 마일스톤(M1–M4) 아래 세부 작업과 기존 완료 실적을 동일 가중치로 계산합니다. 완료 작업 수 ÷ 전체 작업 수이며, 연구 전체의 검증된 공정률 또는 성능 지표를 뜻하지 않습니다.",
     "progressMethod": "completed-milestones",
     "visibility": "public",
     "heroImage": "assets/wearable-v10-head.png",
     "heroImageAlt": "V10 헤드기어의 Gemini 336 카메라·각도 조절 결합부 CAD 렌더",
-    "scopeNote": "현재 V10 디지털 설계와 기존 Astra 수집 도구를 보존하고 있으며, Gemini 336 수집·디컴포지션·로봇 학습은 후속 구현 범위입니다.",
-    "scheduleNote": "2026년 12월까지의 제안 일정입니다. 담당자는 미정이며, 앞으로의 제안 일정과 자료에 기록된 완료 실적을 구분합니다. 완료 항목은 확인일만 표시하고 실제 작업 시작 기간을 추정하지 않습니다.",
-    "scheduleStart": "2026-09-01",
+    "scopeNote": "12월 말까지 V10 웨어러블 실물 프로토타입, Gemini 336 수집 시스템, 학습 데이터셋 v1.0, 로봇 학습·평가 결과를 완성 범위로 합니다.",
+    "scheduleNote": "2026년 12월 말 프로토타입 완성·로봇 학습 결과 평가를 목표로 한 제안 일정입니다(M1 11/20 · M2 11/27 · M3 12/11 · M4 12/30). 전채욱은 하드웨어 제작·정리와 디컴포지션·데이터셋을, 최경철은 시험편·공차 검증·하드웨어 시험과 수집·학습·평가를 담당하며, 완료 항목은 확인일만 표시합니다.",
+    "scheduleStart": "2026-09-14",
     "scheduleEnd": "2026-12-31",
     "scheduleUpdatedAt": "2026-10-18",
     "assetAccessNote": "공개 페이지에서 연결한 GitHub·Google Drive 원본은 각 서비스의 접근 권한을 따릅니다."
@@ -25,12 +25,12 @@
   "stages": [
     {
       "id": "hardware",
-      "title": "하드웨어",
-      "english": "Wearable Hardware",
-      "description": "사람의 작업을 기록할 헤드기어·등판 컴퓨팅·전원 모듈을 설계하고 실물 검증으로 연결합니다.",
+      "title": "M1 · 웨어러블 프로토타입",
+      "english": "Wearable Prototype",
+      "description": "V10 실물 제작·조립·전원·하중·착용 시험을 마치고 수집용 장치 버전을 동결합니다. 게이트 11/20.",
       "status": "active",
-      "currentState": "V10 설계 검토본 확보 · 실물 검증 준비",
-      "nextAction": "미확정 소모품 선정과 수령 치수 확인",
+      "currentState": "V10 설계 검토본 확보 · 소모품 선정 착수",
+      "nextAction": "미확정 소모품 발주·시험편 출력",
       "source": {
         "label": "하드웨어 상태",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/README.md"
@@ -38,12 +38,12 @@
     },
     {
       "id": "capture",
-      "title": "데이터 수집",
+      "title": "M2 · 데이터 수집 시스템",
       "english": "Demonstration Capture",
-      "description": "컬러·깊이·프레임 시간 정보를 저장하고 장치 버전과 센서 설정을 수집 세션에 연결합니다.",
+      "description": "Gemini 336 수집 백엔드·동기화·캘리브레이션을 검증하고 표준 세션 데이터를 수집합니다. 게이트 11/27.",
       "status": "active",
-      "currentState": "Astra 기존 도구 확보 · Gemini 336 연동 예정",
-      "nextAction": "Gemini 336 수집 백엔드와 동기화 검증",
+      "currentState": "Astra 기존 도구 확보 · Gemini 336 환경 구축 착수",
+      "nextAction": "Gemini 336 SDK 환경 구축",
       "source": {
         "label": "수집 도구",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
@@ -51,12 +51,12 @@
     },
     {
       "id": "decomposition",
-      "title": "디컴포지션·정제",
-      "english": "Task Decomposition",
-      "description": "시연을 구간·하위 태스크로 분해하고 주석과 정제를 통해 학습용 데이터로 구조화합니다.",
+      "title": "M3 · 디컴포지션·데이터셋",
+      "english": "Decomposition & Dataset",
+      "description": "시연을 하위 태스크로 분할·정제·리타게팅해 학습 데이터셋 v1.0을 확정합니다. 게이트 12/11.",
       "status": "planned",
-      "currentState": "작업 분할·주석·평가 체계 계획",
-      "nextAction": "작업 계층과 주석 스키마 정의",
+      "currentState": "작업 계층 정의 착수",
+      "nextAction": "태스크 3종 작업 계층 정의",
       "source": {
         "label": "태스크 분해",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
@@ -64,12 +64,12 @@
     },
     {
       "id": "learning",
-      "title": "로봇 학습",
-      "english": "Robot Learning",
-      "description": "버전이 확정된 데이터로 모델을 학습하고 로봇 평가 결과를 다음 수집과 개선에 연결합니다.",
+      "title": "M4 · 로봇 학습·평가",
+      "english": "Robot Learning & Evaluation",
+      "description": "학습 파이프라인을 선행 구축하고 데이터셋 v1.0으로 학습해 시뮬레이션·실로봇 평가를 수행합니다. 게이트 12/30.",
       "status": "planned",
-      "currentState": "학습·평가 구현 계획",
-      "nextAction": "데이터셋·모델·학습·평가 설정 정의",
+      "currentState": "대상 로봇·평가 환경 확정 착수",
+      "nextAction": "로봇 플랫폼·평가 태스크 확정",
       "source": {
         "label": "학습 영역",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
@@ -91,27 +91,27 @@
       },
       "date": "2026-09-29",
       "targetDate": null,
-      "owner": null,
+      "owner": "전채욱",
       "weight": 1,
       "startDate": "2026-09-29",
       "scheduleStatus": "recorded",
       "dependencies": []
     },
     {
-      "id": "hardware-materials",
+      "id": "m1-01",
       "stageId": "hardware",
-      "title": "소모품 선정·수령 치수 확인",
-      "status": "active",
-      "criteria": "하중 웨빙·버클·마찰층·조끼 등 미확정 품목을 선정하고 패드와 체결품 치수를 실측한다.",
-      "summary": "구매 목록은 작성했으며 미확정 소모품과 실측 조건이 남아 있음.",
+      "title": "미확정 소모품 선정·발주",
+      "status": "planned",
+      "criteria": "하중 웨빙·버클·마찰층·조끼 품목 확정 후 발주 완료, BOM 미확정 항목 0개",
+      "summary": "하중 웨빙·버클·마찰층·조끼 품목 확정 후 발주 완료, BOM 미확정 항목 0개",
       "completedAt": null,
       "evidence": {
-        "label": "구매 BOM의 미확정 항목",
-        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/bom/procurement_bom.md"
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
       },
-      "date": "2026-10-30",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-10-23",
+      "targetDate": "2026-10-23",
+      "owner": "전채욱",
       "weight": 1,
       "startDate": "2026-10-19",
       "scheduleStatus": "proposed",
@@ -120,25 +120,205 @@
       ]
     },
     {
-      "id": "hardware-physical",
+      "id": "m1-02",
       "stageId": "hardware",
-      "title": "실물 제작·조립·착용 시험",
+      "title": "H2D 시험편 출력·공차 검증",
       "status": "planned",
-      "criteria": "출력·조립 후 하중·열·전원·착용 시험 결과와 변경 사항을 기록한다.",
-      "summary": "디지털 검사 이후 실제 출력·조립·착용 및 안전성 시험 필요.",
+      "criteria": "시험편 2종 출력, 키홀 체결·카메라 피치축 공차 실측 기록",
+      "summary": "시험편 2종 출력, 키홀 체결·카메라 피치축 공차 실측 기록",
       "completedAt": null,
       "evidence": {
-        "label": "남은 실물 검증 조건",
+        "label": "V10 검증 범위",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
       },
-      "date": "2026-11-13",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-10-24",
+      "targetDate": "2026-10-24",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-10-19",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "hardware-design"
+      ]
+    },
+    {
+      "id": "m1-03",
+      "stageId": "hardware",
+      "title": "제작 부품 6종 본 출력",
+      "status": "planned",
+      "criteria": "헤드기어·등판 부품 6종 출력 완료, 출력 시간·재료량 실측값 기록",
+      "summary": "헤드기어·등판 부품 6종 출력 완료, 출력 시간·재료량 실측값 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-10-30",
+      "targetDate": "2026-10-30",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-10-26",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-02"
+      ]
+    },
+    {
+      "id": "m1-04",
+      "stageId": "hardware",
+      "title": "수령품 실측·V10.1 치수 반영",
+      "status": "planned",
+      "criteria": "패드·체결품 실측치를 CAD에 반영, 변경 내역 기록",
+      "summary": "패드·체결품 실측치를 CAD에 반영, 변경 내역 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-10-30",
+      "targetDate": "2026-10-30",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-10-26",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-01"
+      ]
+    },
+    {
+      "id": "m1-05",
+      "stageId": "hardware",
+      "title": "교체형 패드 재단·조립",
+      "status": "planned",
+      "criteria": "이마 1·후두부 2 패드 재단·접착·후크루프 결합, 탈착 10회 확인",
+      "summary": "이마 1·후두부 2 패드 재단·접착·후크루프 결합, 탈착 10회 확인",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-11-04",
+      "targetDate": "2026-11-04",
+      "owner": "전채욱",
       "weight": 1,
       "startDate": "2026-11-02",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "hardware-materials"
+        "m1-03",
+        "m1-04"
+      ]
+    },
+    {
+      "id": "m1-06",
+      "stageId": "hardware",
+      "title": "헤드기어·등판 통합 조립·배선",
+      "status": "planned",
+      "criteria": "Gemini 336·J4012·배터리 결선, 부팅·카메라 인식 확인",
+      "summary": "Gemini 336·J4012·배터리 결선, 부팅·카메라 인식 확인",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-11-06",
+      "targetDate": "2026-11-06",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-11-02",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-03",
+        "m1-04"
+      ]
+    },
+    {
+      "id": "m1-07",
+      "stageId": "hardware",
+      "title": "전원·발열 시험",
+      "status": "planned",
+      "criteria": "카메라 스트리밍+J4012 부하 60분 연속, 배터리 지속시간·표면온도 기록",
+      "summary": "카메라 스트리밍+J4012 부하 60분 연속, 배터리 지속시간·표면온도 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-11-11",
+      "targetDate": "2026-11-11",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-09",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-06"
+      ]
+    },
+    {
+      "id": "m1-08",
+      "stageId": "hardware",
+      "title": "하중·체결 내구 시험",
+      "status": "planned",
+      "criteria": "등판 하중 분산·버클 체결 반복 시험, 파손·변형 여부 기록",
+      "summary": "등판 하중 분산·버클 체결 반복 시험, 파손·변형 여부 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-11-11",
+      "targetDate": "2026-11-11",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-09",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-06"
+      ]
+    },
+    {
+      "id": "m1-09",
+      "stageId": "hardware",
+      "title": "착용성 시험",
+      "status": "planned",
+      "criteria": "착용자 3인 이상 30분 착용, 시야각·압력·불편도 설문 기록",
+      "summary": "착용자 3인 이상 30분 착용, 시야각·압력·불편도 설문 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-11-16",
+      "targetDate": "2026-11-16",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-12",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-05",
+        "m1-07",
+        "m1-08"
+      ]
+    },
+    {
+      "id": "m1-10",
+      "stageId": "hardware",
+      "title": "M1 게이트: 웨어러블 프로토타입 확정",
+      "status": "planned",
+      "criteria": "시험 결과·변경 사항·최종 BOM 정리, 수집용 장치 버전 동결",
+      "summary": "시험 결과·변경 사항·최종 BOM 정리, 수집용 장치 버전 동결",
+      "completedAt": null,
+      "evidence": {
+        "label": "V10 검증 범위",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
+      },
+      "date": "2026-11-20",
+      "targetDate": "2026-11-20",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-11-17",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-09"
       ]
     },
     {
@@ -155,188 +335,679 @@
       },
       "date": "2026-09-17",
       "targetDate": null,
-      "owner": null,
+      "owner": "최경철",
       "weight": 1,
       "startDate": "2026-09-17",
       "scheduleStatus": "recorded",
       "dependencies": []
     },
     {
-      "id": "capture-gemini",
+      "id": "m2-01",
       "stageId": "capture",
-      "title": "Gemini 336 수집 백엔드 구축",
+      "title": "Gemini 336·J4012 개발 환경 구축",
       "status": "planned",
-      "criteria": "V10의 Gemini 336을 연동하고 컬러·깊이·메타데이터 저장을 검증한다.",
-      "summary": "V10 장치에 맞는 신규 수집 백엔드 필요.",
+      "criteria": "Orbbec SDK·드라이버 설치, 컬러·깊이 스트림 확인",
+      "summary": "Orbbec SDK·드라이버 설치, 컬러·깊이 스트림 확인",
       "completedAt": null,
       "evidence": {
-        "label": "현재 수집 프로그램 범위",
-        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/README.md"
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
       },
-      "date": "2026-11-06",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-10-23",
+      "targetDate": "2026-10-23",
+      "owner": "최경철",
       "weight": 1,
       "startDate": "2026-10-19",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "hardware-design",
         "capture-legacy"
       ]
     },
     {
-      "id": "capture-sessions",
+      "id": "m2-02",
       "stageId": "capture",
-      "title": "동기화·장시간 수집 및 표준 세션 검증",
+      "title": "세션 메타데이터 스키마 정의",
       "status": "planned",
-      "criteria": "시간·공간 정렬과 연속 기록을 검증하고 하드웨어 버전·센서 설정·시간 정보를 세션에 연결한다.",
-      "summary": "기존 Astra 시험에는 노출 동기화·공간 정렬·장시간 녹화 검증이 포함되지 않음.",
+      "criteria": "장치 버전·센서 설정·시각·피험자·태스크 필드 확정",
+      "summary": "장치 버전·센서 설정·시각·피험자·태스크 필드 확정",
       "completedAt": null,
       "evidence": {
-        "label": "Astra 시간·공간 정렬 범위",
+        "label": "수집 도구",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
       },
-      "date": "2026-11-27",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-10-30",
+      "targetDate": "2026-10-30",
+      "owner": "최경철",
       "weight": 1,
-      "startDate": "2026-11-16",
+      "startDate": "2026-10-26",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "hardware-physical",
-        "capture-gemini"
+        "m2-01"
       ]
     },
     {
-      "id": "decomposition-schema",
-      "stageId": "decomposition",
-      "title": "작업 분할·계층·주석 체계 정의",
+      "id": "m2-03",
+      "stageId": "capture",
+      "title": "Gemini 336 수집 백엔드 구현",
       "status": "planned",
-      "criteria": "원본 시연 세션을 참조하는 구간·하위 태스크·계층 및 주석 스키마를 정한다.",
-      "summary": "태스크 분해는 향후 구현 영역으로 분리되어 있음.",
+      "criteria": "컬러·깊이·IMU·프레임 시각 저장, 기존 Astra 도구 인터페이스 호환",
+      "summary": "컬러·깊이·IMU·프레임 시각 저장, 기존 Astra 도구 인터페이스 호환",
       "completedAt": null,
       "evidence": {
-        "label": "태스크 분해 영역",
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-06",
+      "targetDate": "2026-11-06",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-10-26",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-01"
+      ]
+    },
+    {
+      "id": "m2-04",
+      "stageId": "capture",
+      "title": "시간 동기화 검증",
+      "status": "planned",
+      "criteria": "하드웨어 타임스탬프·노출 동기 오차 측정, 허용 기준 기록",
+      "summary": "하드웨어 타임스탬프·노출 동기 오차 측정, 허용 기준 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-11",
+      "targetDate": "2026-11-11",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-09",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-03"
+      ]
+    },
+    {
+      "id": "m2-05",
+      "stageId": "capture",
+      "title": "캘리브레이션·깊이-컬러 정렬",
+      "status": "planned",
+      "criteria": "내·외부 파라미터 산출, 정렬 오차 측정",
+      "summary": "내·외부 파라미터 산출, 정렬 오차 측정",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-13",
+      "targetDate": "2026-11-13",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-12",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-04"
+      ]
+    },
+    {
+      "id": "m2-06",
+      "stageId": "capture",
+      "title": "표준 수집 프로토콜·대상 태스크 정의",
+      "status": "planned",
+      "criteria": "평가와 동일한 대상 태스크 3종, 반복 횟수·절차서 확정",
+      "summary": "평가와 동일한 대상 태스크 3종, 반복 횟수·절차서 확정",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-06",
+      "targetDate": "2026-11-06",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-02",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m4-01"
+      ]
+    },
+    {
+      "id": "m2-07",
+      "stageId": "capture",
+      "title": "벤치 파일럿 수집(데이터 v0)",
+      "status": "planned",
+      "criteria": "고정 거치 상태로 태스크 3종 파일럿 수집, 후속 단계 선행용",
+      "summary": "고정 거치 상태로 태스크 3종 파일럿 수집, 후속 단계 선행용",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-13",
+      "targetDate": "2026-11-13",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-09",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-03",
+        "m2-06"
+      ]
+    },
+    {
+      "id": "m2-08",
+      "stageId": "capture",
+      "title": "웨어러블 착용 통합 수집 시험",
+      "status": "planned",
+      "criteria": "착용 상태 수집 동작·발열·프레임 드롭 확인",
+      "summary": "착용 상태 수집 동작·발열·프레임 드롭 확인",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-18",
+      "targetDate": "2026-11-18",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-17",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-09",
+        "m2-05"
+      ]
+    },
+    {
+      "id": "m2-09",
+      "stageId": "capture",
+      "title": "장시간 연속 기록 검증",
+      "status": "planned",
+      "criteria": "30분 이상 연속 기록, 프레임 드롭·파일 무결성 기록",
+      "summary": "30분 이상 연속 기록, 프레임 드롭·파일 무결성 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-20",
+      "targetDate": "2026-11-20",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-19",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-08"
+      ]
+    },
+    {
+      "id": "m2-10",
+      "stageId": "capture",
+      "title": "M2 게이트: 표준 세션 데이터 수집",
+      "status": "planned",
+      "criteria": "확정 장치로 태스크 3종 × 다회 시연 수집, 세션 목록·메타데이터 검증",
+      "summary": "확정 장치로 태스크 3종 × 다회 시연 수집, 세션 목록·메타데이터 검증",
+      "completedAt": null,
+      "evidence": {
+        "label": "수집 도구",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+      },
+      "date": "2026-11-27",
+      "targetDate": "2026-11-27",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-23",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m1-10",
+        "m2-09"
+      ]
+    },
+    {
+      "id": "m3-01",
+      "stageId": "decomposition",
+      "title": "작업 계층·하위 태스크 체계 정의",
+      "status": "planned",
+      "criteria": "태스크 3종의 구간·하위 태스크·계층 정의서",
+      "summary": "태스크 3종의 구간·하위 태스크·계층 정의서",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
       },
-      "date": "2026-10-30",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-10-28",
+      "targetDate": "2026-10-28",
+      "owner": "전채욱",
       "weight": 1,
       "startDate": "2026-10-19",
       "scheduleStatus": "proposed",
       "dependencies": []
     },
     {
-      "id": "decomposition-pipeline",
+      "id": "m3-02",
       "stageId": "decomposition",
-      "title": "디컴포지션·정제 파이프라인 구현",
+      "title": "주석 스키마·도구 선정",
       "status": "planned",
-      "criteria": "분할·주석·정제 코드를 구현하고 원본 세션과 처리 버전을 추적한다.",
-      "summary": "원본 세션 ID·주석 버전·코드 커밋을 연결하는 처리 체계 구현 예정.",
+      "criteria": "주석 필드·라벨 규칙·도구 확정, 원본 세션 ID 참조 구조",
+      "summary": "주석 필드·라벨 규칙·도구 확정, 원본 세션 ID 참조 구조",
       "completedAt": null,
       "evidence": {
-        "label": "태스크 분해 관리 방침",
+        "label": "태스크 분해",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
       },
-      "date": "2026-12-11",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-11-06",
+      "targetDate": "2026-11-06",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-10-29",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m3-01"
+      ]
+    },
+    {
+      "id": "m3-03",
+      "stageId": "decomposition",
+      "title": "손·물체 포즈 추출 파이프라인",
+      "status": "planned",
+      "criteria": "손 키포인트·물체 위치 추출, 파일럿 데이터로 동작 확인",
+      "summary": "손 키포인트·물체 위치 추출, 파일럿 데이터로 동작 확인",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-11-27",
+      "targetDate": "2026-11-27",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-11-16",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-07"
+      ]
+    },
+    {
+      "id": "m3-04",
+      "stageId": "decomposition",
+      "title": "파일럿 데이터 수동 주석(기준 정답)",
+      "status": "planned",
+      "criteria": "파일럿 세션 수동 분할·주석, 자동 분할 평가 기준셋",
+      "summary": "파일럿 세션 수동 분할·주석, 자동 분할 평가 기준셋",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-11-20",
+      "targetDate": "2026-11-20",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-11-16",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m2-07",
+        "m3-02"
+      ]
+    },
+    {
+      "id": "m3-05",
+      "stageId": "decomposition",
+      "title": "자동 구간 분할 구현",
+      "status": "planned",
+      "criteria": "모션·영상 기반 하위 태스크 자동 분할 코드",
+      "summary": "모션·영상 기반 하위 태스크 자동 분할 코드",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-12-04",
+      "targetDate": "2026-12-04",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-11-23",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m3-04"
+      ]
+    },
+    {
+      "id": "m3-06",
+      "stageId": "decomposition",
+      "title": "정제 규칙·필터 구현",
+      "status": "planned",
+      "criteria": "결측·블러·동기 오류 구간 제거 규칙과 리포트",
+      "summary": "결측·블러·동기 오류 구간 제거 규칙과 리포트",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-12-04",
+      "targetDate": "2026-12-04",
+      "owner": "전채욱",
       "weight": 1,
       "startDate": "2026-11-30",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "decomposition-schema",
-        "capture-sessions"
+        "m2-10"
       ]
     },
     {
-      "id": "decomposition-quality",
+      "id": "m3-07",
       "stageId": "decomposition",
-      "title": "정제 데이터 품질 평가·버전 확정",
+      "title": "사람→로봇 동작 리타게팅",
       "status": "planned",
-      "criteria": "분할·주석·정제 품질을 평가하고 학습용 데이터 스냅샷을 확정한다.",
-      "summary": "평가 기준과 실제 처리 데이터는 추후 확정.",
+      "criteria": "손 궤적을 로봇 엔드이펙터·그리퍼 명령으로 변환",
+      "summary": "손 궤적을 로봇 엔드이펙터·그리퍼 명령으로 변환",
       "completedAt": null,
       "evidence": {
-        "label": "데이터 관리 영역",
-        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/data/README.md"
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
       },
-      "date": "2026-12-18",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-12-08",
+      "targetDate": "2026-12-08",
+      "owner": "전채욱",
       "weight": 1,
-      "startDate": "2026-12-14",
+      "startDate": "2026-11-30",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "decomposition-pipeline"
+        "m3-03",
+        "m4-01"
       ]
     },
     {
-      "id": "learning-config",
-      "stageId": "learning",
-      "title": "학습 데이터·모델·평가 설정 정의",
+      "id": "m3-08",
+      "stageId": "decomposition",
+      "title": "처리 버전 추적 체계",
       "status": "planned",
-      "criteria": "정확한 데이터셋·주석 버전과 모델·학습·평가 설정을 연결한다.",
-      "summary": "학습과 평가 소스 및 재현 설정을 관리할 영역 준비.",
+      "criteria": "원본 세션 ID·주석 버전·코드 커밋 연결 기록",
+      "summary": "원본 세션 ID·주석 버전·코드 커밋 연결 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-12-04",
+      "targetDate": "2026-12-04",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-12-01",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m3-02"
+      ]
+    },
+    {
+      "id": "m3-09",
+      "stageId": "decomposition",
+      "title": "분할·주석 품질 평가",
+      "status": "planned",
+      "criteria": "자동 대비 수동 분할 일치율, 정제 후 잔존율 보고",
+      "summary": "자동 대비 수동 분할 일치율, 정제 후 잔존율 보고",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-12-08",
+      "targetDate": "2026-12-08",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-12-07",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m3-05",
+        "m3-06"
+      ]
+    },
+    {
+      "id": "m3-10",
+      "stageId": "decomposition",
+      "title": "M3 게이트: 학습 데이터셋 v1.0 확정",
+      "status": "planned",
+      "criteria": "학습 포맷으로 변환한 데이터 스냅샷·해시·데이터 카드 확정",
+      "summary": "학습 포맷으로 변환한 데이터 스냅샷·해시·데이터 카드 확정",
+      "completedAt": null,
+      "evidence": {
+        "label": "태스크 분해",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
+      },
+      "date": "2026-12-11",
+      "targetDate": "2026-12-11",
+      "owner": "전채욱",
+      "weight": 1,
+      "startDate": "2026-12-09",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m3-07",
+        "m3-08",
+        "m3-09"
+      ]
+    },
+    {
+      "id": "m4-01",
+      "stageId": "learning",
+      "title": "대상 로봇·평가 환경 확정",
+      "status": "planned",
+      "criteria": "로봇 플랫폼·시뮬레이터·평가 태스크 3종 확정(수집 태스크와 일치)",
+      "summary": "로봇 플랫폼·시뮬레이터·평가 태스크 3종 확정(수집 태스크와 일치)",
       "completedAt": null,
       "evidence": {
         "label": "로봇 학습 영역",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
       },
-      "date": "2026-11-13",
-      "targetDate": null,
-      "owner": null,
+      "date": "2026-10-30",
+      "targetDate": "2026-10-30",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-10-19",
+      "scheduleStatus": "proposed",
+      "dependencies": []
+    },
+    {
+      "id": "m4-02",
+      "stageId": "learning",
+      "title": "학습 데이터·모델·평가 설정 정의",
+      "status": "planned",
+      "criteria": "정책 모델 후보·베이스라인·설정 파일 구조 확정",
+      "summary": "정책 모델 후보·베이스라인·설정 파일 구조 확정",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-11-06",
+      "targetDate": "2026-11-06",
+      "owner": "최경철",
       "weight": 1,
       "startDate": "2026-11-02",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "decomposition-schema"
+        "m4-01",
+        "m3-01"
       ]
     },
     {
-      "id": "learning-run",
+      "id": "m4-03",
       "stageId": "learning",
-      "title": "학습 실행·모델 산출",
+      "title": "학습 파이프라인 구축·스모크 테스트",
       "status": "planned",
-      "criteria": "학습을 실행하고 코드·데이터·주석·설정·난수 시드와 체크포인트를 연결한다.",
-      "summary": "학습 완료된 모델이나 가중치는 현재 백업에 포함되지 않음.",
+      "criteria": "공개 데이터셋으로 학습·추론 종단 실행 확인",
+      "summary": "공개 데이터셋으로 학습·추론 종단 실행 확인",
       "completedAt": null,
       "evidence": {
-        "label": "모델 산출물 관리 방침",
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-11-20",
+      "targetDate": "2026-11-20",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-09",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m4-02"
+      ]
+    },
+    {
+      "id": "m4-04",
+      "stageId": "learning",
+      "title": "평가 프로토콜·지표 정의",
+      "status": "planned",
+      "criteria": "성공률·완료 시간·시도 횟수(태스크당 20회) 등 판정 기준 문서",
+      "summary": "성공률·완료 시간·시도 횟수(태스크당 20회) 등 판정 기준 문서",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-11-20",
+      "targetDate": "2026-11-20",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-16",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m4-01"
+      ]
+    },
+    {
+      "id": "m4-05",
+      "stageId": "learning",
+      "title": "로봇 베이스라인 데이터 확보",
+      "status": "planned",
+      "criteria": "원격조작 소량 로봇 데이터로 비교군 구성",
+      "summary": "원격조작 소량 로봇 데이터로 비교군 구성",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-12-04",
+      "targetDate": "2026-12-04",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-11-23",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m4-01"
+      ]
+    },
+    {
+      "id": "m4-06",
+      "stageId": "learning",
+      "title": "파일럿 데이터 예비 학습",
+      "status": "planned",
+      "criteria": "데이터 v0로 학습~시뮬레이션 평가 종단 검증, 문제점 목록",
+      "summary": "데이터 v0로 학습~시뮬레이션 평가 종단 검증, 문제점 목록",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-12-09",
+      "targetDate": "2026-12-09",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-12-01",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m4-03",
+        "m3-03"
+      ]
+    },
+    {
+      "id": "m4-07",
+      "stageId": "learning",
+      "title": "데이터셋 v1.0 본 학습",
+      "status": "planned",
+      "criteria": "시드·설정·데이터 버전 고정 학습, 체크포인트 기록",
+      "summary": "시드·설정·데이터 버전 고정 학습, 체크포인트 기록",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-12-16",
+      "targetDate": "2026-12-16",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-12-14",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m3-10",
+        "m4-06"
+      ]
+    },
+    {
+      "id": "m4-08",
+      "stageId": "learning",
+      "title": "시뮬레이션 평가·체크포인트 선정",
+      "status": "planned",
+      "criteria": "시뮬레이션 성공률 비교 후 실로봇 투입 모델 선정",
+      "summary": "시뮬레이션 성공률 비교 후 실로봇 투입 모델 선정",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
+      },
+      "date": "2026-12-18",
+      "targetDate": "2026-12-18",
+      "owner": "최경철",
+      "weight": 1,
+      "startDate": "2026-12-17",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "m4-07",
+        "m4-04"
+      ]
+    },
+    {
+      "id": "m4-09",
+      "stageId": "learning",
+      "title": "실로봇 평가",
+      "status": "planned",
+      "criteria": "태스크 3종 × 20회, 베이스라인 대비 성공률 측정",
+      "summary": "태스크 3종 × 20회, 베이스라인 대비 성공률 측정",
+      "completedAt": null,
+      "evidence": {
+        "label": "로봇 학습 영역",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
       },
       "date": "2026-12-24",
-      "targetDate": null,
-      "owner": null,
+      "targetDate": "2026-12-24",
+      "owner": "최경철",
       "weight": 1,
       "startDate": "2026-12-21",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "decomposition-quality",
-        "learning-config"
+        "m4-08",
+        "m4-05"
       ]
     },
     {
       "id": "learning-evaluate",
       "stageId": "learning",
-      "title": "로봇 평가·재현 결과 정리",
+      "title": "M4 게이트: 결과·재현 절차 정리",
       "status": "planned",
-      "criteria": "로봇 평가 결과와 재현 절차를 기록하고 다음 수집·학습 개선에 연결한다.",
-      "summary": "평가·로봇 적용은 전체 프레임워크의 최종 범위.",
+      "criteria": "평가 결과·재현 절차·개선 과제를 정리해 다음 수집·학습에 연결",
+      "summary": "평가 결과·재현 절차·개선 과제를 정리해 다음 수집·학습에 연결",
       "completedAt": null,
       "evidence": {
-        "label": "전체 프레임워크 범위",
-        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/docs/project-overview.md"
+        "label": "로봇 학습 영역",
+        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
       },
       "date": "2026-12-30",
-      "targetDate": null,
-      "owner": null,
+      "targetDate": "2026-12-30",
+      "owner": "최경철",
       "weight": 1,
       "startDate": "2026-12-28",
       "scheduleStatus": "proposed",
       "dependencies": [
-        "learning-run"
+        "m4-09"
       ]
     }
   ],
