@@ -1,6 +1,61 @@
 'use strict';
 
+const WEAVE_SCHEDULE = (() => {
+  const DAY = 86400000;
+  const isoDate = value => new Date(value).toISOString().slice(0, 10);
+  function parseDate(value) {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    const result = Date.parse(`${value}T00:00:00Z`);
+    return Number.isFinite(result) && isoDate(result) === value ? result : null;
+  }
+  function timeline(project) {
+    const start = parseDate(project.scheduleStart), end = parseDate(project.scheduleEnd);
+    return start !== null && end !== null && end >= start ? {start, end, days: (end - start) / DAY + 1} : null;
+  }
+  function taskRange(task) {
+    const completed = parseDate(task.completedAt);
+    if (task.status === 'done' && completed !== null) return {start: completed, end: completed, recorded: true};
+    const start = parseDate(task.startDate), end = parseDate(task.date);
+    return start !== null && end !== null && end >= start ? {start, end, recorded: false} : null;
+  }
+  function position(range, period) {
+    if (!range || !period || range.end < period.start || range.start > period.end) return null;
+    const start = Math.max(range.start, period.start), end = Math.min(range.end, period.end);
+    return {left: (start - period.start) / DAY / period.days * 100,
+      width: ((end - start) / DAY + 1) / period.days * 100,
+      center: ((start - period.start) / DAY + 0.5) / period.days * 100};
+  }
+  function months(period) {
+    if (!period) return [];
+    const first = new Date(period.start), result = [];
+    let cursor = Date.UTC(first.getUTCFullYear(), first.getUTCMonth(), 1);
+    while (cursor <= period.end) {
+      const date = new Date(cursor), next = Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1);
+      const range = {start: cursor, end: next - DAY};
+      result.push({label: `${date.getUTCMonth() + 1}월`, ...position(range, period)});
+      cursor = next;
+    }
+    return result;
+  }
+  function weeks(period) {
+    if (!period) return [];
+    const result = [];
+    for (let day = period.start; day <= period.end; day += DAY) {
+      if (day !== period.start && new Date(day).getUTCDay() !== 1) continue;
+      result.push({date: isoDate(day), label: new Date(day).getUTCDate(), left: (day - period.start) / DAY / period.days * 100});
+    }
+    return result;
+  }
+  function todayInSeoul(now = new Date()) {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'}).formatToParts(now).map(part => [part.type, part.value]));
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
+  return {DAY, isoDate, parseDate, timeline, taskRange, position, months, weeks, todayInSeoul};
+})();
+if (typeof module !== 'undefined' && module.exports) module.exports = WEAVE_SCHEDULE;
+
 (() => {
+  if (typeof document === 'undefined') return;
   const icons = {
     grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     chart:'<path d="M4 3v17h17M8 15v-4m5 4V7m5 8V4"/>',
@@ -51,13 +106,46 @@
   };
   const tabs = (kind,selected,includeAll=true) => `<div class="tabs" aria-label="단계 선택">${includeAll?`<button type="button" class="tab" data-${kind}="all" aria-pressed="${selected==='all'}">전체</button>`:''}${data.stages.map(stage=>`<button type="button" class="tab" data-${kind}="${esc(stage.id)}" aria-pressed="${selected===stage.id}">${esc(stage.title)}</button>`).join('')}</div>`;
 
+  function scheduleDates(task) {
+    const range = WEAVE_SCHEDULE.taskRange(task);
+    if (!range) return '일정 미정';
+    const start = WEAVE_SCHEDULE.isoDate(range.start), end = WEAVE_SCHEDULE.isoDate(range.end);
+    return range.recorded ? `완료 확인 ${dateLabel(end)}` : `${dateLabel(start)} ~ ${dateLabel(end)} · 제안`;
+  }
+
+  function renderGantt() {
+    const period = WEAVE_SCHEDULE.timeline(data.project);
+    if (!period) return '<section class="gantt-section card"><div class="empty-state">간트 차트의 시작일과 종료일을 등록해 주세요.</div></section>';
+    const ticks = WEAVE_SCHEDULE.weeks(period);
+    const today = WEAVE_SCHEDULE.todayInSeoul();
+    const todayValue = WEAVE_SCHEDULE.parseDate(today);
+    const todayPosition = WEAVE_SCHEDULE.position({start: todayValue, end: todayValue}, period);
+    const lines = ticks.map(tick => `<span class="gantt-grid-line" style="left:${tick.left}%" aria-hidden="true"></span>`).join('');
+    const todayLine = todayPosition ? `<span class="gantt-today-line" style="left:${todayPosition.center}%" aria-hidden="true"></span>` : '';
+    const todayLabel = todayPosition ? `<span class="gantt-today-tag" style="left:${todayPosition.center}%" aria-hidden="true">오늘 ${esc(today.slice(5).replace('-', '/'))}</span>` : '';
+    const groups = data.stages.map((stage, index) => {
+      const tasks = stageTasks(stage);
+      return `<div role="rowgroup" class="stage-${esc(stage.id)}"><div role="row" class="gantt-row gantt-stage-row"><div role="rowheader" class="gantt-label"><a class="gantt-stage-name" href="#progress/${esc(stage.id)}">${icon(stageIcons[index])}${esc(stage.title)}</a><span class="gantt-stage-count">${tasks.length}개</span></div><div role="cell" class="gantt-track gantt-stage-track">${lines}${todayLine}</div></div>${tasks.map(task => {
+        const range = WEAVE_SCHEDULE.taskRange(task), placement = WEAVE_SCHEDULE.position(range, period);
+        const description = `${task.title}, ${statuses[task.status] || '현황 미등록'}, ${scheduleDates(task)}`;
+        const href = `#progress/${esc(stage.id)}`;
+        const bar = !placement ? '<span class="gantt-unscheduled">일정 미정 또는 표시 범위 밖</span>' : range.recorded
+          ? `<a class="gantt-milestone" href="${href}" style="left:calc(${placement.center}% - 22px)" title="${esc(description)}" aria-label="${esc(description)}"><span class="gantt-diamond" aria-hidden="true"></span><span class="gantt-completed-label" aria-hidden="true">완료</span></a>`
+          : `<a class="gantt-bar ${task.status === 'active' || task.status === 'review' ? 'is-active' : 'is-planned'}" href="${href}" style="left:${placement.left}%;width:${placement.width}%" title="${esc(description)}" aria-label="${esc(description)}"><span class="gantt-bar-label" aria-hidden="true">${Math.round((range.end-range.start)/WEAVE_SCHEDULE.DAY)+1}일</span></a>`;
+        return `<div role="row" class="gantt-row gantt-task-row"><div role="rowheader" class="gantt-label"><a class="gantt-task-link" href="${href}"><span class="gantt-task-title">${esc(task.title)}</span><span class="gantt-task-date">${esc(statuses[task.status] || '현황 미등록')} · ${scheduleDates(task)}</span></a></div><div role="cell" class="gantt-track gantt-task-track">${lines}${todayLine}${bar}</div></div>`;
+      }).join('')}</div>`;
+    }).join('');
+    return `<section class="gantt-section card" aria-labelledby="gantt-title"><div class="gantt-heading"><div><h2 id="gantt-title">전체 마일스톤 일정</h2><p>${dateLabel(data.project.scheduleStart)} — ${dateLabel(data.project.scheduleEnd)} · 4단계 / ${data.milestones.length}개 마일스톤</p></div><div class="gantt-tools"><button type="button" class="button" data-gantt-today="${todayPosition ? todayPosition.center : ''}" ${todayPosition ? '' : 'disabled'}>오늘 위치</button><a class="text-link" href="#progress">완료 기준·근거 보기 ${icon('external')}</a></div></div><div class="gantt-legend" aria-label="차트 범례"><span><i class="legend-swatch is-complete" aria-hidden="true"></i>완료 확인일</span><span><i class="legend-swatch is-active" aria-hidden="true"></i>진행 중 · 제안 기간</span><span><i class="legend-swatch is-planned" aria-hidden="true"></i>예정 · 제안 기간</span><span><i class="legend-swatch is-today" aria-hidden="true"></i>오늘 (한국 시간)</span></div><p class="gantt-scroll-hint" id="gantt-scroll-help">좌우로 스크롤해 12월까지 확인하세요. 마일스톤 이름은 고정됩니다.</p><div class="gantt-scroll" tabindex="0" role="region" aria-label="마일스톤 간트 차트, 가로 스크롤 가능" aria-describedby="gantt-scroll-help"><div class="gantt-table" role="table" aria-label="2026년 9월부터 12월까지 마일스톤 일정"><div role="rowgroup"><div role="row" class="gantt-row gantt-header"><div role="columnheader" class="gantt-label">마일스톤 <span>상태 · 실적 또는 제안 기간</span></div><div role="columnheader" class="gantt-axis gantt-track" aria-label="2026년 월별·월요일 기준 주간 눈금">${WEAVE_SCHEDULE.months(period).map(month => `<span class="gantt-month" style="left:${month.left}%;width:${month.width}%">${month.label}</span>`).join('')}${ticks.map(tick => `<span class="gantt-week" style="left:${tick.left}%" title="${esc(tick.date)}">${tick.label}</span>`).join('')}${todayLine}${todayLabel}</div></div></div>${groups}</div></div><div class="gantt-footnote"><p>${esc(data.project.scheduleNote)}</p><p>◆ 완료 항목은 실제 시작 기간을 추정하지 않고 확인일 하루로 표시합니다. 기간 막대와 이름을 선택하면 단계별 완료 기준·근거를 확인할 수 있습니다.</p></div></section>`;
+  }
+
   function renderHome(){
     const overall=stats(data.milestones);
     const next=data.milestones.filter(item=>item.status!=='done').slice(0,3);
     const featured=data.deliverables.find(item=>item.image)||data.deliverables[0];
-    main.innerHTML=`<section class="home-intro"><div class="intro-copy"><span class="eyebrow">웨어러블 데이터 · 로봇 학습</span><h1>사람의 행동에서,<br>로봇의 학습으로.</h1><p>${esc(data.project.description)}</p><div class="button-row"><a class="button button-primary" href="#progress">${icon('chart')}프로젝트 진행 현황</a><a class="button" href="#about">프로젝트 소개</a></div></div><div class="overall card">${ring(overall,'마일스톤 완료')}<div><h2>프로젝트 진행도</h2><p class="overall-count"><strong>${overall.done}</strong> / ${overall.total} 마일스톤 완료</p><p class="progress-note">등록된 완료 기준으로 집계<br>자료 정리일 ${dateLabel(data.project.updatedAt)}</p><a class="text-link calculation-link" href="#progress">계산 기준 보기</a></div></div></section>
+    main.innerHTML=`<section class="schedule-intro"><div><span class="eyebrow">WEAVE · PROJECT SCHEDULE</span><h1>프로젝트 일정</h1><p>하드웨어에서 로봇 학습까지, 12월을 향한 마일스톤을 확인합니다.</p></div><div class="schedule-intro-actions"><span class="date-note">계획 갱신 ${dateLabel(data.project.scheduleUpdatedAt)}</span><a class="button" href="#files">${icon('folder')}프로젝트 자료</a></div></section><div class="schedule-summary"><div class="schedule-stat"><span>등록 마일스톤 완료</span><strong>${overall.done} <small>/ ${overall.total}개 · ${overall.percent}%</small></strong><small>등록된 완료 기준으로 집계</small></div><div class="schedule-stat"><span>계획 종료</span><strong>${dateLabel(data.project.scheduleEnd)}</strong><small>마지막 평가 목표 ${dateLabel(data.milestones.find(item=>item.id==='learning-evaluate')?.date)}</small></div><div class="schedule-stat"><span>미완료 항목 계획</span><strong>제안 일정</strong><small>${data.milestones.filter(item=>item.status!=='done').length}개 항목 · 담당자 미정</small></div></div>${renderGantt()}
+      <section class="home-intro home-context"><div class="intro-copy"><span class="eyebrow">웨어러블 데이터 · 로봇 학습</span><h2>사람의 행동에서,<br>로봇의 학습으로.</h2><p>${esc(data.project.description)}</p><div class="button-row"><a class="button button-primary" href="#progress">${icon('chart')}프로젝트 진행 현황</a><a class="button" href="#about">프로젝트 소개</a></div></div><div class="overall card">${ring(overall,'마일스톤 완료')}<div><h2>프로젝트 진행도</h2><p class="overall-count"><strong>${overall.done}</strong> / ${overall.total} 마일스톤 완료</p><p class="progress-note">등록된 완료 기준으로 집계<br>자료 정리일 ${dateLabel(data.project.updatedAt)}</p><a class="text-link calculation-link" href="#progress">계산 기준 보기</a></div></div></section>
       <section class="pipeline-section" aria-labelledby="pipeline-title"><div class="section-heading"><h2 id="pipeline-title">단계별 진행 현황<span class="tiny-number">4단계</span></h2><span>단계를 선택하면 세부 현황이 열립니다</span></div><div class="pipeline">${data.stages.map((stage,i)=>stageCard(stage,i)).join('')}</div></section>
-      <div class="dashboard-lower"><section class="milestone-panel card"><div class="section-heading"><h2>다음 마일스톤</h2><a class="text-link" href="#progress">전체 일정 보기</a></div><p class="panel-note">목표일·담당자 확정이 필요합니다.</p><ol class="milestone-list">${next.map(item=>`<li class="milestone-item"><span class="milestone-dot">${icon('clock')}</span><div><h3>${esc(item.title)}</h3><div class="milestone-meta"><span>${esc(stageName(item.stageId))}</span><span>·</span><span>${dateLabel(item.date)}</span></div></div>${badge(item.status)}</li>`).join('')}</ol></section><section class="prototype-feature card">${featured?`<div class="prototype-image">${featured.image?`<img src="${esc(data.project.heroImage||featured.image)}" alt="${esc(data.project.heroImageAlt||featured.title)}" loading="lazy"><span class="image-caption">V10 헤드기어 설계</span>`:icon('chip')}</div><div class="prototype-copy"><span class="eyebrow">대표 성과물</span>${badge(featured.status,featured.statusLabel)}<h2>${esc(featured.title)}</h2><p>${esc(featured.summary)}</p><button class="text-link" data-detail="${esc(featured.id)}">성과물 자세히 보기</button></div>`:''}</section></div>
+      <div class="dashboard-lower"><section class="milestone-panel card"><div class="section-heading"><h2>다음 마일스톤</h2><a class="text-link" href="#progress">전체 일정 보기</a></div><p class="panel-note">2026년 12월까지의 제안 일정입니다. 담당자는 미정입니다.</p><ol class="milestone-list">${next.map(item=>`<li class="milestone-item"><span class="milestone-dot">${icon('clock')}</span><div><h3>${esc(item.title)}</h3><div class="milestone-meta"><span>${esc(stageName(item.stageId))}</span><span>·</span><span>목표 ${dateLabel(item.date)} · 제안</span></div></div>${badge(item.status)}</li>`).join('')}</ol></section><section class="prototype-feature card">${featured?`<div class="prototype-image">${featured.image?`<img src="${esc(data.project.heroImage||featured.image)}" alt="${esc(data.project.heroImageAlt||featured.title)}" loading="lazy"><span class="image-caption">V10 헤드기어 설계</span>`:icon('chip')}</div><div class="prototype-copy"><span class="eyebrow">대표 성과물</span>${badge(featured.status,featured.statusLabel)}<h2>${esc(featured.title)}</h2><p>${esc(featured.summary)}</p><button class="text-link" data-detail="${esc(featured.id)}">성과물 자세히 보기</button></div>`:''}</section></div>
       <section class="updates-panel"><div class="section-heading"><h2>최근 기록</h2><a class="text-link" href="#files">관련 자료 보기</a></div><div class="updates-list">${data.updates.slice(0,3).map(item=>`<article class="update-card card"><time ${item.date?`datetime="${esc(item.date)}"`:''}>${item.date?dateLabel(item.date):'기존 자료 기록'}</time><h3>${esc(item.title)}</h3><p>${esc(item.description||item.summary)}</p>${item.url?external(item.url,'근거 문서'):''}</article>`).join('')}</div></section>`;
   }
 
@@ -66,14 +154,14 @@
     const stages=progressStage==='all'?data.stages:data.stages.filter(stage=>stage.id===progressStage);
     main.innerHTML=`${heading('단계별 계획과 완료 기준','진행 현황·일정','완료 기준과 근거 문서를 함께 확인합니다.')}
       <div class="progress-summary card">${ring(overall)}<div><h2>${overall.done} / ${overall.total} 등록 마일스톤 완료</h2><p>하드웨어 설계부터 로봇 학습까지, 단계별 완료 여부를 기준으로 집계합니다.</p><details class="method-details"><summary>진행도 계산 기준</summary><p>${esc(data.project.progressBasis)} 진행 중·검증 중 항목은 완료에 포함하지 않습니다.</p></details></div></div>
-      <p class="notice schedule-notice">${icon('clock')}<span><strong>목표일·담당자 미확정</strong>${esc(data.project.scheduleNote)}</span></p>
+      <p class="notice schedule-notice">${icon('clock')}<span><strong>2026년 12월까지의 제안 일정</strong>${esc(data.project.scheduleNote)}</span></p>
       <div class="toolbar">${tabs('progress-stage',progressStage)}</div>
       ${stages.map(stage=>{const s=stats(stageTasks(stage));return `<section class="stage-detail card">
         <div class="stage-detail-head"><div><h2>${esc(stage.title)}</h2><p>${esc(stage.description)}</p></div><div class="stage-detail-status">${badge(stage.status)} <span class="version">${s.done}/${s.total} 완료</span></div></div>
         <div class="table-wrap"><table class="data-table task-table" role="table"><thead role="rowgroup"><tr role="row"><th role="columnheader" scope="col">마일스톤 / 완료 기준</th><th role="columnheader" scope="col">상태</th><th role="columnheader" scope="col">일정</th><th role="columnheader" scope="col">담당자</th><th role="columnheader" scope="col">근거</th></tr></thead><tbody role="rowgroup">
-          ${stageTasks(stage).map(task=>`<tr role="row"><td role="cell"><span class="cell-title">${esc(task.title)}</span><span class="cell-description">${esc(task.criteria)}</span></td><td role="cell"><span class="mobile-cell-label" aria-hidden="true">상태</span>${badge(task.status)}</td><td role="cell" class="nowrap subtle"><span class="cell-kicker">${task.status==='done'&&task.completedAt?'완료 확인일':'목표일'}</span>${dateLabel(task.status==='done'&&task.completedAt?task.completedAt:task.date)}</td><td role="cell" class="subtle nowrap"><span class="mobile-cell-label" aria-hidden="true">담당자</span>${esc(task.owner||'미정')}</td><td role="cell" class="nowrap"><span class="mobile-cell-label" aria-hidden="true">근거</span>${task.evidence?external(typeof task.evidence==='string'?task.evidence:task.evidence.url,'문서'):'<span class="subtle">미등록</span>'}</td></tr>`).join('')}
+          ${stageTasks(stage).map(task=>`<tr role="row"><td role="cell"><span class="cell-title">${esc(task.title)}</span><span class="cell-description">${esc(task.criteria)}</span></td><td role="cell"><span class="mobile-cell-label" aria-hidden="true">상태</span>${badge(task.status)}</td><td role="cell" class="subtle"><span class="cell-kicker">${task.status==='done'&&task.completedAt?'완료 실적':'계획 기간 · 제안'}</span>${scheduleDates(task)}</td><td role="cell" class="subtle nowrap"><span class="mobile-cell-label" aria-hidden="true">담당자</span>${esc(task.owner||'미정')}</td><td role="cell" class="nowrap"><span class="mobile-cell-label" aria-hidden="true">근거</span>${task.evidence?external(typeof task.evidence==='string'?task.evidence:task.evidence.url,'문서'):'<span class="subtle">미등록</span>'}</td></tr>`).join('')}
         </tbody></table></div></section>`;}).join('')}
-      <section class="timeline-card card"><div class="section-heading"><h2>단계별 로드맵</h2><span>목표 일정 확정 전 · 의존 관계 기준</span></div><div class="timeline">${data.stages.map((stage,i)=>`<div class="timeline-step"><span>단계 0${i+1}</span><h3>${esc(stage.title)}</h3><p>${esc(stageTasks(stage).find(task=>task.status!=='done')?.title||'등록 기준 완료')}</p></div>`).join('')}</div></section>`;
+      <section class="timeline-card card"><div class="section-heading"><h2>단계별 로드맵</h2><span>2026년 12월까지의 제안 계획 · 선후 관계 반영</span></div><div class="timeline">${data.stages.map((stage,i)=>`<div class="timeline-step"><span>단계 0${i+1}</span><h3>${esc(stage.title)}</h3><p>${esc(stageTasks(stage).find(task=>task.status!=='done')?.title||'등록 기준 완료')}</p></div>`).join('')}</div></section>`;
   }
 
   function deliverableCard(item){const index=data.stages.findIndex(stage=>stage.id===item.stageId);return `<article class="deliverable-card card"><div class="deliverable-visual ${item.image?'':'no-image'}">${item.image?`<img src="${esc(item.image)}" alt="${esc(item.title)}" loading="lazy">`:icon(stageIcons[index]||'layers')}</div><div class="deliverable-body"><div class="deliverable-meta"><span>${esc(stageName(item.stageId))}</span><span>·</span><span>${esc(item.version||'버전 미정')}</span></div>${badge(item.status,item.statusLabel)}<h2>${esc(item.title)}</h2><p>${esc(item.summary)}</p><button type="button" class="button" data-detail="${esc(item.id)}">성과물 상세 보기</button></div></article>`;}
@@ -118,12 +206,26 @@
   }
   document.addEventListener('click',event=>{
     const skip=event.target.closest('.skip-link');if(skip){event.preventDefault();main.focus({preventScroll:true});main.scrollIntoView({behavior:'instant'});return;}
+    const todayButton=event.target.closest('[data-gantt-today]');if(todayButton){const scroller=main.querySelector('.gantt-scroll'),table=main.querySelector('.gantt-table'),label=main.querySelector('.gantt-label');if(scroller&&table&&label&&todayButton.dataset.ganttToday){const labelWidth=label.getBoundingClientRect().width;const point=labelWidth+(table.scrollWidth-labelWidth)*Number(todayButton.dataset.ganttToday)/100;scroller.scrollTo({left:Math.max(0,point-labelWidth-(scroller.clientWidth-labelWidth)/2),behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}return;}
     const detail=event.target.closest('[data-detail]');if(detail){showDetail(detail.dataset.detail,detail);return;}
     if(event.target.closest('[data-close-dialog]')){dialog.close();return;}
     const progress=event.target.closest('[data-progress-stage]');if(progress){const id=progress.dataset.progressStage;const newHash=id==='all'?'#progress':`#progress/${id}`;if(location.hash===newHash){progressStage=id;renderProgress();}else location.hash=newHash;return;}
     const deliverable=event.target.closest('[data-deliverable-stage]');if(deliverable){deliverableStage=deliverable.dataset.deliverableStage;renderDeliverables();main.querySelector(`[data-deliverable-stage="${deliverableStage}"]`)?.focus();}
   });
   document.addEventListener('input',event=>{if(event.target.id==='file-search'){fileQuery=event.target.value;filterFiles();}});
+  document.addEventListener('focusin',event=>{
+    const marker=event.target.closest('.gantt-bar, .gantt-milestone');
+    if(!marker)return;
+    requestAnimationFrame(()=>{
+      if(!marker.isConnected||document.activeElement!==marker)return;
+      const scroller=marker.closest('.gantt-scroll');
+      const label=marker.closest('.gantt-row').querySelector('.gantt-label');
+      const viewport=scroller.getBoundingClientRect(), bounds=marker.getBoundingClientRect();
+      const visibleStart=viewport.left+label.getBoundingClientRect().width+8, visibleEnd=viewport.right-8;
+      if(bounds.left<visibleStart)scroller.scrollTo({left:scroller.scrollLeft+bounds.left-visibleStart,behavior:'instant'});
+      else if(bounds.right>visibleEnd)scroller.scrollTo({left:scroller.scrollLeft+bounds.right-visibleEnd,behavior:'instant'});
+    });
+  });
   document.addEventListener('change',event=>{if(event.target.id==='file-stage'){fileStage=event.target.value;filterFiles();}if(event.target.id==='file-type'){fileType=event.target.value;filterFiles();}});
   dialog.addEventListener('close',()=>{lastDialogTrigger?.isConnected&&lastDialogTrigger.focus();});
   dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});

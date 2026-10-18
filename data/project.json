@@ -16,7 +16,10 @@
     "heroImage": "assets/wearable-v10-head.png",
     "heroImageAlt": "V10 헤드기어의 Gemini 336 카메라·각도 조절 결합부 CAD 렌더",
     "scopeNote": "현재 V10 디지털 설계와 기존 Astra 수집 도구를 보존하고 있으며, Gemini 336 수집·디컴포지션·로봇 학습은 후속 구현 범위입니다.",
-    "scheduleNote": "목표일과 담당자는 아직 확정하지 않았습니다. 자료에 기록된 완료 확인일과 앞으로의 목표일을 구분합니다.",
+    "scheduleNote": "2026년 12월까지의 제안 일정입니다. 담당자는 미정이며, 앞으로의 제안 일정과 자료에 기록된 완료 실적을 구분합니다. 완료 항목은 확인일만 표시하고 실제 작업 시작 기간을 추정하지 않습니다.",
+    "scheduleStart": "2026-09-01",
+    "scheduleEnd": "2026-12-31",
+    "scheduleUpdatedAt": "2026-10-18",
     "assetAccessNote": "공개 페이지에서 연결한 GitHub·Google Drive 원본은 각 서비스의 접근 권한을 따릅니다."
   },
   "stages": [
@@ -86,10 +89,13 @@
         "label": "V10 검증 범위",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
       },
-      "date": null,
+      "date": "2026-09-29",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-09-29",
+      "scheduleStatus": "recorded",
+      "dependencies": []
     },
     {
       "id": "hardware-materials",
@@ -103,10 +109,15 @@
         "label": "구매 BOM의 미확정 항목",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/bom/procurement_bom.md"
       },
-      "date": null,
+      "date": "2026-10-30",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-10-19",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "hardware-design"
+      ]
     },
     {
       "id": "hardware-physical",
@@ -120,10 +131,15 @@
         "label": "남은 실물 검증 조건",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/hardware/wearable/prototypes/wearable_prototype_v10/notes/verification_v10.md"
       },
-      "date": null,
+      "date": "2026-11-13",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-11-02",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "hardware-materials"
+      ]
     },
     {
       "id": "capture-legacy",
@@ -137,10 +153,13 @@
         "label": "Astra 기능과 시험 결과",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
       },
-      "date": null,
+      "date": "2026-09-17",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-09-17",
+      "scheduleStatus": "recorded",
+      "dependencies": []
     },
     {
       "id": "capture-gemini",
@@ -154,10 +173,16 @@
         "label": "현재 수집 프로그램 범위",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/README.md"
       },
-      "date": null,
+      "date": "2026-11-06",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-10-19",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "hardware-design",
+        "capture-legacy"
+      ]
     },
     {
       "id": "capture-sessions",
@@ -171,10 +196,16 @@
         "label": "Astra 시간·공간 정렬 범위",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
       },
-      "date": null,
+      "date": "2026-11-27",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-11-16",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "hardware-physical",
+        "capture-gemini"
+      ]
     },
     {
       "id": "decomposition-schema",
@@ -188,10 +219,13 @@
         "label": "태스크 분해 영역",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
       },
-      "date": null,
+      "date": "2026-10-30",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-10-19",
+      "scheduleStatus": "proposed",
+      "dependencies": []
     },
     {
       "id": "decomposition-pipeline",
@@ -205,10 +239,16 @@
         "label": "태스크 분해 관리 방침",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/task_decomposition/README.md"
       },
-      "date": null,
+      "date": "2026-12-11",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-11-30",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "decomposition-schema",
+        "capture-sessions"
+      ]
     },
     {
       "id": "decomposition-quality",
@@ -222,10 +262,15 @@
         "label": "데이터 관리 영역",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/data/README.md"
       },
-      "date": null,
+      "date": "2026-12-18",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-12-14",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "decomposition-pipeline"
+      ]
     },
     {
       "id": "learning-config",
@@ -239,10 +284,15 @@
         "label": "로봇 학습 영역",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
       },
-      "date": null,
+      "date": "2026-11-13",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-11-02",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "decomposition-schema"
+      ]
     },
     {
       "id": "learning-run",
@@ -256,10 +306,16 @@
         "label": "모델 산출물 관리 방침",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/learning/README.md"
       },
-      "date": null,
+      "date": "2026-12-24",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-12-21",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "decomposition-quality",
+        "learning-config"
+      ]
     },
     {
       "id": "learning-evaluate",
@@ -273,10 +329,15 @@
         "label": "전체 프레임워크 범위",
         "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/docs/project-overview.md"
       },
-      "date": null,
+      "date": "2026-12-30",
       "targetDate": null,
       "owner": null,
-      "weight": 1
+      "weight": 1,
+      "startDate": "2026-12-28",
+      "scheduleStatus": "proposed",
+      "dependencies": [
+        "learning-run"
+      ]
     }
   ],
   "deliverables": [
