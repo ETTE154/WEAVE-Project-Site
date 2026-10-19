@@ -85,7 +85,7 @@ test('all forty-two tasks have a range and proposals finish within December', ()
     }
   }
   assert.equal(data.project.baselineDate, '2026-09-29');
-  assert.equal(data.project.updatedAt, '2026-10-02');
+  assert.equal(data.project.updatedAt, '2026-10-19');
   assert.equal(data.project.scheduleUpdatedAt, '2026-10-18');
 });
 

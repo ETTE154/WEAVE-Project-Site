@@ -7,7 +7,7 @@
     "description": "웨어러블 하드웨어로 사람의 시연을 수집하고, 디컴포지션과 정제를 거쳐 로봇 학습·평가로 연결하는 프레임워크 개발 프로젝트입니다.",
     "repositoryUrl": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive",
     "driveUrl": "https://drive.google.com/drive/folders/15O6H4VUg61dzlUNySLZ0pQQUuIW_PSrN",
-    "updatedAt": "2026-10-02",
+    "updatedAt": "2026-10-19",
     "updatedAtLabel": "페이지 자료 정리일",
     "baselineDate": "2026-09-29",
     "progressBasis": "4개 마일스톤(M1–M4) 아래 세부 작업과 기존 완료 실적을 동일 가중치로 계산합니다. 완료 작업 수 ÷ 전체 작업 수이며, 연구 전체의 검증된 공정률 또는 성능 지표를 뜻하지 않습니다.",
@@ -42,11 +42,11 @@
       "english": "Demonstration Capture",
       "description": "Gemini 336 수집 백엔드·동기화·캘리브레이션을 검증하고 표준 세션 데이터를 수집합니다. 게이트 11/27.",
       "status": "active",
-      "currentState": "Astra 기존 도구 확보 · Gemini 336 환경 구축 착수",
+      "currentState": "Astra 도구·D435i RGB-D/Pose·IMU 실기 기록 확보",
       "nextAction": "Gemini 336 SDK 환경 구축",
       "source": {
-        "label": "수집 도구",
-        "url": "https://github.com/ETTE154/WEAVE-Robot-Learning-Drive/blob/HEAD/capture/astra-capture/README.md"
+        "label": "D435i 선행 수집 검증",
+        "url": "https://ette154.github.io/WEAVE-Project-Site/#tests/d435i"
       }
     },
     {
@@ -1083,6 +1083,42 @@
       ]
     },
     {
+      "id": "d435i-test",
+      "title": "D435i RGB-D·Pose·IMU 테스트",
+      "summary": "D435i와 Jetson Orin NX에서 RGB-D·Pose 스트리밍, IMU 원본 CSV 저장, 90초 영상 연속성을 확인한 선행 수집 테스트입니다.",
+      "stageId": "capture",
+      "version": "D435i / Jetson · 2026.10.19",
+      "status": "done",
+      "statusLabel": "수집·저장 실기 기록 확인",
+      "image": null,
+      "imageAlt": null,
+      "updatedAt": "2026-10-19",
+      "links": [
+        {
+          "label": "실기 테스트 보고서",
+          "url": "https://ette154.github.io/WEAVE-Project-Site/#tests/d435i"
+        },
+        {
+          "label": "공개 검증 요약 JSON",
+          "url": "https://ette154.github.io/WEAVE-Project-Site/data/reports/d435i-validation-summary-20261019.json"
+        }
+      ],
+      "details": [
+        "90.026초·15fps·1,351프레임 녹화, 영상 센서·Pose 큐와 CSV 큐 누락 0개를 확인했습니다.",
+        "90초 세션의 원본 IMU 23,714개를 보존했고, 평균 녹화 처리는 42.2ms/프레임이었습니다.",
+        "별도 8.082초 세션의 IMU 2,106개를 UI 이력과 CSV에서 샘플별 대조했습니다.",
+        "4종 Pose 모델 전환, 5초 준비, 4분할 합본·개별 영상 5개·CSV 저장과 재생을 확인했습니다.",
+        "IMU 그래프의 실시간 표시·CSV는 유지하고 그래프 영상 저장은 중단한 현행 구성입니다."
+      ],
+      "limitations": [
+        "90초·단일 장비에서 수집·저장 경로를 확인한 결과입니다. 착용 상태의 장시간 반복 수집과 지속시간 검증은 후속 시험입니다.",
+        "15fps는 저장 영상의 출력 속도이며 반복 프레임을 포함합니다. 카메라 수신 FPS·Pose 추론 FPS·종단 간 지연과 구분합니다.",
+        "90초 세션에서는 손이 검출되지 않아 관절 행이 0개였습니다. 별도 8초 세션의 관절 546개 출력 확인도 정답 기반 정확도 평가를 뜻하지 않습니다.",
+        "IMU 바이어스·절대 좌표 정확도·센서 간 정밀 시간 보정과 로봇 제어·학습 성능은 이 검증 범위에 포함하지 않습니다.",
+        "Depth MP4는 표시용 색상 영상이고 CSV에는 깊이 통계와 관절 좌표가 들어갑니다. 원본 Z16 깊이 시퀀스는 연속 저장하지 않으며, depth16.png 스냅샷은 별도 기능입니다."
+      ]
+    },
+    {
       "id": "astra-capture",
       "title": "Astra RGB-D 수집 도구",
       "summary": "Astra Mini의 컬러·원본 깊이를 저장하고 브라우저에서 미리보기와 녹화를 제어하는 기존 로컬 프로그램.",
@@ -1155,6 +1191,34 @@
     }
   ],
   "files": [
+    {
+      "id": "d435i-report",
+      "title": "D435i 실기 테스트 보고서",
+      "description": "RGB-D·Pose·IMU, 90초 연속 녹화, 별도 8초 CSV 대조와 검증 범위.",
+      "type": "시험 결과",
+      "url": "https://ette154.github.io/WEAVE-Project-Site/#tests/d435i",
+      "sourcePath": "#tests/d435i",
+      "provider": "테스트 보고서",
+      "stageId": "capture",
+      "version": "2026-10-19",
+      "updatedAt": "2026-10-19",
+      "access": "공개 요약",
+      "sizeBytes": null
+    },
+    {
+      "id": "d435i-validation-json",
+      "title": "D435i 공개 검증 요약 JSON",
+      "description": "실기 보고서의 집계 수치·원본 기록 SHA-256. 촬영 프레임·원본 CSV·장치 식별 정보는 포함하지 않는 공개 요약.",
+      "type": "시험 결과",
+      "url": "https://ette154.github.io/WEAVE-Project-Site/data/reports/d435i-validation-summary-20261019.json",
+      "sourcePath": "data/reports/d435i-validation-summary-20261019.json",
+      "provider": "검증 요약 JSON",
+      "stageId": "capture",
+      "version": "2026-10-19",
+      "updatedAt": "2026-10-19",
+      "access": "공개 요약",
+      "sizeBytes": null
+    },
     {
       "id": "v10-guide",
       "title": "V10 설계·제작 안내",
@@ -1379,6 +1443,14 @@
   ],
   "updates": [
     {
+      "id": "d435i-live-tests",
+      "date": "2026-10-19",
+      "title": "D435i RGB-D·Pose·IMU 실기 검증",
+      "summary": "90초 녹화와 원본 IMU 보존을 확인하고, IMU 그래프 영상 저장 중단 후 연속성 개선 결과와 후속 검증 범위를 정리했습니다.",
+      "stageId": "capture",
+      "url": "https://ette154.github.io/WEAVE-Project-Site/#tests/d435i"
+    },
+    {
       "id": "page-baseline",
       "date": "2026-10-02",
       "title": "프로젝트 현황 페이지 초기 정리",
@@ -1412,6 +1484,12 @@
     }
   ],
   "sources": [
+    {
+      "id": "d435i-tests",
+      "title": "D435i 선행 수집·저장 실기 검증",
+      "url": "https://ette154.github.io/WEAVE-Project-Site/#tests/d435i",
+      "date": "2026-10-19"
+    },
     {
       "id": "readme",
       "title": "프로젝트 README",
@@ -1495,6 +1573,227 @@
       "sha256": "e8bb72629cb69334993ebf701725a1b073422219703da913d4fd5aabd17f6bf2",
       "caption": "V10 헤드기어 CAD 확대 렌더 · 실물 사진이 아님",
       "sizeBytes": 169742
+    }
+  ],
+  "testReports": [
+    {
+      "id": "d435i",
+      "stageId": "capture",
+      "title": "Intel RealSense D435i 실기 테스트",
+      "summary": "D435i와 Jetson Orin NX에서 RGB-D·Pose 스트리밍, IMU 원본 CSV 저장, 90초 영상 연속성을 확인한 선행 수집 테스트입니다.",
+      "date": "2026-10-19",
+      "owner": "최경철",
+      "status": "done",
+      "statusLabel": "수집·저장 실기 기록 확인",
+      "environment": "D435i · USB 3.2 / Jetson Orin NX / 프로젝트 내부 librealsense RSUSB",
+      "scope": "M2 데이터 수집 시스템의 선행 검증 기록입니다. Gemini 336 표준 세션 게이트와 별도로 관리하며, 일정 완료율에는 추가 합산하지 않습니다.",
+      "url": "https://ette154.github.io/WEAVE-Project-Site/#tests/d435i",
+      "summaryUrl": "https://ette154.github.io/WEAVE-Project-Site/data/reports/d435i-validation-summary-20261019.json",
+      "metrics": [
+        {
+          "label": "연속 녹화",
+          "value": "90.026초",
+          "detail": "15fps 출력 · 1,351프레임"
+        },
+        {
+          "label": "저장 큐 누락",
+          "value": "0개",
+          "detail": "영상 센서·Pose 큐 / CSV 큐"
+        },
+        {
+          "label": "원본 IMU 보존",
+          "value": "23,714개",
+          "detail": "90초 녹화의 가속도·각속도 합계"
+        },
+        {
+          "label": "평균 녹화 처리",
+          "value": "42.2ms",
+          "detail": "프레임당 처리 · 모델 추론 시간과 별도"
+        }
+      ],
+      "recording": {
+        "durationSeconds": 90.026,
+        "outputFps": 15,
+        "outputFrames": 1351,
+        "droppedSensorFrames": 0,
+        "droppedPoseFrames": 0,
+        "droppedDatasetSamples": 0,
+        "meanFrameProcessingMs": 42.1663554916584,
+        "maxSensorSourceAgeSeconds": 0.13365416367014404,
+        "maxCombinedSourceAgeSeconds": 0.2280986803380074,
+        "longestCombinedSourceHoldSeconds": 0.26666666666666666,
+        "csvCounts": {
+          "camera": 2699,
+          "imu_accel": 5689,
+          "imu_gyro": 18025,
+          "pose_frame": 785,
+          "pose_joint": 0
+        },
+        "rawImuExactlyPreserved": true,
+        "poseJointsUnverified": true
+      },
+      "recordingResults": [
+        [
+          "녹화 길이 / 출력",
+          "90.026초 / 15fps / 1,351프레임"
+        ],
+        [
+          "합본 / 개별 영상",
+          "1280×960 RGB·Depth·RGB-D·Pose 4분할 + 640×480 개별 영상 5개"
+        ],
+        [
+          "저장 큐 누락",
+          "센서 영상 0개 · Pose 영상 0개 · CSV 0개"
+        ],
+        [
+          "평균 녹화 처리",
+          "42.2ms/프레임 (15fps 시간 예산 66.7ms)"
+        ],
+        [
+          "원본과 출력의 최대 시차",
+          "RGB 0.134초 / 합본 0.229초 이하"
+        ],
+        [
+          "같은 합본 원본의 최장 유지",
+          "0.267초 이하"
+        ],
+        [
+          "원본 IMU",
+          "가속도 5,689개 + 각속도 18,025개 = 23,714개"
+        ],
+        [
+          "재생 확인",
+          "모든 영상의 처음·중간·끝 및 RGB·합본의 5초 간격 디코딩 통과"
+        ]
+      ],
+      "imu": {
+        "durationSeconds": 8.082,
+        "profileHz": {
+          "accel": 63,
+          "gyro": 200
+        },
+        "rowCounts": {
+          "camera": 242,
+          "imu_accel": 505,
+          "imu_gyro": 1601,
+          "pose_frame": 40,
+          "pose_joint": 546
+        },
+        "totalRows": 2934,
+        "nativeImuSamples": 2106,
+        "nativeImuSamplesExactlyPreserved": true,
+        "allSourceTimesWithinGate": true,
+        "poseJointsObserved": 546
+      },
+      "imuResults": [
+        [
+          "별도 세션 길이",
+          "8.082초"
+        ],
+        [
+          "IMU 설정 프로파일",
+          "가속도 63Hz / 각속도 200Hz"
+        ],
+        [
+          "CSV 행 수",
+          "카메라 242 · 가속도 505 · 각속도 1,601 · Pose 결과 40 · 관절 546 = 2,934행"
+        ],
+        [
+          "원본 IMU 대조",
+          "UI 이력의 2,106개와 CSV의 값·시각·연결 세대 일치, 누락 0개"
+        ],
+        [
+          "저장·전송",
+          "5초 준비 구간 제외 · CSV 해시 일치 · HEAD/Range 응답 · 미완료 파일 접근 차단"
+        ]
+      ],
+      "checks": [
+        {
+          "title": "RGB-D·Pose 스트리밍",
+          "description": "RGB·정렬 깊이·RGB-D·Pose·Pose RGB-D의 실제 프레임 수신과 모델 전환·OFF/ON을 확인했습니다."
+        },
+        {
+          "title": "녹화 시작·재생·다운로드",
+          "description": "5초 준비 뒤 저장을 시작하며, 준비 취소·수동 정지·카메라 정지 시 마무리·부분 다운로드를 검증했습니다."
+        },
+        {
+          "title": "IMU 실시간 표시·CSV",
+          "description": "가속도·각속도 6축 그래프와 원본 샘플 저장을 유지합니다. 영상 주기에 맞춰 IMU를 줄이지 않습니다."
+        },
+        {
+          "title": "영상 연속성 개선",
+          "description": "IMU 그래프 영상과 7개 영상의 순차 인코딩에서 지연이 발생했습니다. 현재는 그래프 영상 저장을 중단하고 6개 영상 + 원본 CSV 구성으로 90초 재검증했습니다."
+        }
+      ],
+      "models": [
+        [
+          "YOLOv8n-pose",
+          "TensorRT GPU",
+          "사람 검출·신체 17점"
+        ],
+        [
+          "MediaPipe Hand",
+          "CPU VIDEO 추적",
+          "손목·손가락 21점"
+        ],
+        [
+          "RTMPose-m",
+          "TensorRT GPU",
+          "전체 영상 / 선택 영역의 신체 17점 가설"
+        ],
+        [
+          "EgoForce HALO",
+          "CUDA GPU FP16 + CPU 손 영역 검출",
+          "손 21점 + 선택 전완 영역 3점의 2D 출력"
+        ]
+      ],
+      "outputs": [
+        [
+          "combined.mp4",
+          "RGB·Depth·RGB-D·Pose 4분할, 1280×960·15fps"
+        ],
+        [
+          "개별 MP4 5개",
+          "rgb / depth / rgbd / pose / pose_rgbd, 640×480·15fps"
+        ],
+        [
+          "dataset.csv",
+          "카메라 정보·원본 IMU·깊이 통계·Pose 결과·관절 행"
+        ],
+        [
+          "manifest.json / frames.jsonl",
+          "녹화 설정·출력 정보와 원본 프레임 대응·반복·빈 구간"
+        ],
+        [
+          "sensor / poses / events JSONL",
+          "원본 프레임 정보·관절 결과·모델 변경 및 정지 이벤트"
+        ]
+      ],
+      "limitations": [
+        "90초·단일 장비에서 수집·저장 경로를 확인한 결과입니다. 착용 상태의 장시간 반복 수집과 지속시간 검증은 후속 시험입니다.",
+        "15fps는 저장 영상의 출력 속도이며 반복 프레임을 포함합니다. 카메라 수신 FPS·Pose 추론 FPS·종단 간 지연과 구분합니다.",
+        "90초 세션에서는 손이 검출되지 않아 관절 행이 0개였습니다. 별도 8초 세션의 관절 546개 출력 확인도 정답 기반 정확도 평가를 뜻하지 않습니다.",
+        "IMU 바이어스·절대 좌표 정확도·센서 간 정밀 시간 보정과 로봇 제어·학습 성능은 이 검증 범위에 포함하지 않습니다.",
+        "Depth MP4는 표시용 색상 영상이고 CSV에는 깊이 통계와 관절 좌표가 들어갑니다. 원본 Z16 깊이 시퀀스는 연속 저장하지 않으며, depth16.png 스냅샷은 별도 기능입니다."
+      ],
+      "provenance": [
+        {
+          "source": "realsense_pose_demo/README.md",
+          "sha256": "ceaf80b4c790e895b7b49a215a6de7b6267e2b4398c19782f1f9de8a77570b40"
+        },
+        {
+          "source": "realsense_pose_demo/validation/video_continuity_report.json",
+          "sha256": "12e19a0c61b87c1d6c2ee0a8f8fb13298b8a5944297dbf848ff5cb9bd50ab1ea"
+        },
+        {
+          "source": "realsense_pose_demo/validation/imu_dataset_live_report.json",
+          "sha256": "cef5e97209dccb3aecc538769da4e47f24638c54b009c1cffbbfe4b089b77994"
+        },
+        {
+          "source": "realsense_pose_demo/validation/live_gpu_models_final.json",
+          "sha256": "c9c1fa89375bfcf4dc8596a80b915580c40964567defc6cec40ccd90908de0eb"
+        }
+      ]
     }
   ]
 }
