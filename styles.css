@@ -470,6 +470,42 @@ dialog::backdrop { background: #102a3170; backdrop-filter: blur(4px); }
   .home-context { margin-top: 30px; }
   .home-context .intro-copy h2 { font-size: 1.8rem; }
 }
+.framework-section { margin: 32px 0; overflow: hidden; scroll-margin-top: 24px; }
+.framework-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 24px 18px; }
+.framework-heading .eyebrow { margin-bottom: 5px; }
+.framework-heading p { margin-top: 6px; color: var(--muted); font-size: .9375rem; }
+.framework-heading > .button { flex: none; }
+.framework-figure { margin: 0; }
+.framework-preview { display: block; width: calc(100% - 48px); margin: 0 24px; padding: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; cursor: zoom-in; }
+.framework-preview img { display: block; width: 100%; height: auto; }
+.framework-preview:focus-visible { outline-offset: -4px; }
+.framework-figure figcaption { padding: 18px 24px 0; font-size: .9375rem; color: var(--muted); }
+.framework-figure figcaption strong { color: var(--ink); }
+.framework-scope { display: block; margin-top: 8px; font-size: .8125rem; }
+.framework-downloads { padding: 18px 24px 24px; }
+dialog.framework-dialog { width: min(1440px, calc(100% - 32px)); }
+.framework-dialog .dialog-header { padding: 18px 24px; align-items: center; }
+.framework-dialog .dialog-header .eyebrow { margin-bottom: 2px; }
+.framework-dialog .dialog-header h2 { margin: 0; font-size: 1.25rem; }
+.framework-viewer-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; padding: 12px 24px; font-size: .8125rem; color: var(--muted); }
+.framework-viewport { max-height: 60vh; overflow: auto; background: #fff; border-block: 1px solid var(--line); }
+.framework-viewport:focus-visible { outline: 3px solid var(--teal); outline-offset: -3px; }
+.framework-viewport img { display: block; width: 100%; height: auto; }
+.framework-viewport.is-zoomed img { width: 1800px; max-width: none; }
+.framework-dialog-footer { padding: 16px 24px 22px; }
+.framework-dialog-footer > p { color: var(--muted); font-size: .8125rem; margin-bottom: 12px; }
+@media (max-width: 700px) {
+  .framework-section { margin: 24px 0; scroll-margin-top: 160px; }
+  .framework-heading { padding: 20px 18px 16px; align-items: flex-start; flex-direction: column; gap: 12px; }
+  .framework-preview { width: calc(100% - 36px); margin-inline: 18px; }
+  .framework-figure figcaption { padding: 16px 18px 0; font-size: .875rem; }
+  .framework-downloads { padding: 16px 18px 20px; }
+  .framework-dialog .dialog-header { padding: 16px; gap: 12px; }
+  .framework-dialog .dialog-header h2 { font-size: 1.0625rem; }
+  .framework-viewer-tools { padding: 12px 16px; }
+  .framework-viewport { max-height: 50vh; }
+  .framework-dialog-footer { padding: 14px 16px 18px; }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
