@@ -474,7 +474,12 @@ dialog::backdrop { background: #102a3170; backdrop-filter: blur(4px); }
 .framework-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 24px 18px; }
 .framework-heading .eyebrow { margin-bottom: 5px; }
 .framework-heading p { margin-top: 6px; color: var(--muted); font-size: .9375rem; }
-.framework-heading > .button { flex: none; }
+.framework-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; flex: none; }
+.framework-languages { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--canvas); }
+.framework-languages button { min-height: 44px; padding: 6px 13px; border-radius: 6px; background: transparent; color: var(--muted); font-size: .875rem; font-weight: 600; }
+.framework-languages button[aria-pressed=true] { background: var(--nav); color: #fff; }
+.framework-languages button:hover { box-shadow: inset 0 0 0 1px var(--teal); }
+.framework-resolution { color: var(--muted); font-size: .8125rem; }
 .framework-figure { margin: 0; }
 .framework-preview { display: block; width: calc(100% - 48px); margin: 0 24px; padding: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; cursor: zoom-in; }
 .framework-preview img { display: block; width: 100%; height: auto; }
@@ -497,6 +502,7 @@ dialog.framework-dialog { width: min(1440px, calc(100% - 32px)); }
 @media (max-width: 700px) {
   .framework-section { margin: 24px 0; scroll-margin-top: 160px; }
   .framework-heading { padding: 20px 18px 16px; align-items: flex-start; flex-direction: column; gap: 12px; }
+  .framework-actions { justify-content: flex-start; }
   .framework-preview { width: calc(100% - 36px); margin-inline: 18px; }
   .framework-figure figcaption { padding: 16px 18px 0; font-size: .875rem; }
   .framework-downloads { padding: 16px 18px 20px; }

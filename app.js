@@ -138,16 +138,53 @@ if (typeof module !== 'undefined' && module.exports) module.exports = WEAVE_SCHE
     return `<section class="gantt-section card" aria-labelledby="gantt-title"><div class="gantt-heading"><div><h2 id="gantt-title">M1–M4 세부 작업 일정</h2><p>${dateLabel(data.project.scheduleStart)} — ${dateLabel(data.project.scheduleEnd)} · ${data.stages.length}개 마일스톤 / ${data.milestones.length}개 작업·완료기록</p></div><div class="gantt-tools"><button type="button" class="button" data-gantt-today="${todayPosition ? todayPosition.center : ''}" ${todayPosition ? '' : 'disabled'}>오늘 위치</button><a class="text-link" href="#progress">완료 기준·근거 보기 ${icon('external')}</a></div></div><div class="gantt-legend" aria-label="차트 범례"><span><i class="legend-swatch is-complete" aria-hidden="true"></i>완료 확인일</span><span><i class="legend-swatch is-active" aria-hidden="true"></i>진행 중 · 제안 기간</span><span><i class="legend-swatch is-planned" aria-hidden="true"></i>예정 · 제안 기간</span><span><i class="legend-swatch is-today" aria-hidden="true"></i>오늘 (한국 시간)</span></div><p class="gantt-scroll-hint" id="gantt-scroll-help">차트 안에서 가로·세로로 스크롤하세요. 날짜 머리글과 작업 이름은 고정됩니다.</p><div class="gantt-scroll" tabindex="0" role="region" aria-label="세부 작업 간트 차트, 가로·세로 스크롤 가능" aria-describedby="gantt-scroll-help"><div class="gantt-table" role="table" aria-label="2026년 9월부터 12월까지 세부 작업 일정"><div role="rowgroup" class="gantt-head-group"><div role="row" class="gantt-row gantt-header"><div role="columnheader" class="gantt-label">세부 작업 <span>상태 · 실적 또는 제안 기간</span></div><div role="columnheader" class="gantt-axis gantt-track" aria-label="2026년 월별·월요일 기준 주간 눈금">${WEAVE_SCHEDULE.months(period).map(month => `<span class="gantt-month" style="left:${month.left}%;width:${month.width}%">${month.label}</span>`).join('')}${ticks.map(tick => `<span class="gantt-week" style="left:${tick.left}%" title="${esc(tick.date)}">${tick.label}</span>`).join('')}${todayLine}${todayLabel}</div></div></div>${groups}</div></div><div class="gantt-footnote"><p>${esc(data.project.scheduleNote)}</p><p>◆ 완료 항목은 실제 시작 기간을 추정하지 않고 확인일 하루로 표시합니다. 기간 막대와 이름을 선택하면 단계별 완료 기준·근거를 확인할 수 있습니다.</p></div></section>`;
   }
 
-  const frameworkPath = 'assets/figures/WEAVE_Figure1';
-  const frameworkAlt = 'WEAVE 전체 프레임워크. 웨어러블 RGB-D 시연 수집, 동기화·보정, 손·물체 포즈 추출과 구간 분할·정제·리타게팅, 로봇 정책 학습·시뮬레이션·실로봇 평가를 연결합니다. 벤치 파일럿과 공개 데이터 선행 점검, 평가 피드백과 버전 추적을 포함한 제안 구조입니다.';
-  const frameworkDownloads = () => `<a class="button" href="${frameworkPath}.png" download>PNG 다운로드 · 500 dpi</a><a class="button" href="${frameworkPath}.pdf" download>논문용 PDF</a><a class="text-link" href="${frameworkPath}.svg" target="_blank" rel="noopener noreferrer">SVG 원본 열기${icon('external')}</a>`;
+  const frameworkVariants = {
+    ko: {
+      path: 'assets/figures/WEAVE_Figure1_ko', label: '한글', figureLabel: '그림 1.',
+      alt: 'WEAVE 전체 프레임워크 한글판. 웨어러블 RGB-D 시연 수집, 동기화·보정, 손·물체 포즈 추출과 구간 분할·정제·리타게팅, 로봇 정책 학습·시뮬레이션·실로봇 평가를 연결합니다. 벤치 파일럿과 공개 데이터 선행 점검, 평가 피드백과 버전 추적을 포함한 제안 구조입니다.',
+      caption: '웨어러블 → RGB-D 수집 → 디컴포지션·정제·리타게팅 → 로봇 학습·평가. 벤치 파일럿과 공개 데이터로 선행 작업을 준비하고, 평가 결과를 재수집·개선으로 연결합니다.',
+      scope: '장치 이미지는 V10 CAD 참조이며, 전체 흐름은 제안 구조입니다. 로봇 플랫폼은 미정입니다.'
+    },
+    en: {
+      path: 'assets/figures/WEAVE_Figure1', label: '영문', figureLabel: 'Figure 1.',
+      alt: 'Proposed WEAVE framework: wearable RGB-D demonstrations, synchronization and calibration, hand and object poses, segmentation, cleaning and retargeting, policy training, simulation and real-robot evaluation. Includes a bench pilot, public-data pipeline checks, evaluation feedback and artifact tracking.',
+      caption: 'Wearable demonstrations → RGB-D capture → decomposition, cleaning and retargeting → robot learning and evaluation. Bench-pilot capture and public-data checks support parallel preparation; evaluation failures guide recollection and refinement.',
+      scope: 'Device images are V10 CAD references. The workflow is proposed; the robot platform remains to be determined.'
+    }
+  };
+  let frameworkLanguage = 'ko';
+  try { const saved = localStorage.getItem('weave-framework-language'); if (Object.hasOwn(frameworkVariants, saved)) frameworkLanguage = saved; } catch {}
+  const frameworkLanguages = () => `<div class="framework-languages" role="group" aria-label="그림 언어"><button type="button" lang="ko" data-framework-language="ko" aria-pressed="${frameworkLanguage==='ko'}">한글</button><button type="button" lang="en" data-framework-language="en" aria-pressed="${frameworkLanguage==='en'}">English</button></div>`;
+  const frameworkDownloads = () => {
+    const figure = frameworkVariants[frameworkLanguage];
+    return `<a class="button" data-framework-download="png" href="${figure.path}.png" download>PNG 다운로드 · ${figure.label}</a><a class="button" data-framework-download="pdf" href="${figure.path}.pdf" download>논문용 PDF · ${figure.label}</a><a class="text-link" data-framework-download="svg" href="${figure.path}.svg" target="_blank" rel="noopener noreferrer">SVG 원본 · ${figure.label}${icon('external')}</a>`;
+  };
+  function setFrameworkLanguage(language){
+    if (!Object.hasOwn(frameworkVariants, language)) return;
+    frameworkLanguage = language;
+    const figure = frameworkVariants[language];
+    try { localStorage.setItem('weave-framework-language', language); } catch {}
+    document.querySelectorAll('[data-framework-language]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.frameworkLanguage===language)));
+    document.querySelectorAll('[data-framework-image]').forEach(img => { img.src = `${figure.path}.svg`; img.alt = figure.alt; img.lang = language; });
+    document.querySelectorAll('[data-framework-figure-label]').forEach(label => { label.textContent = figure.figureLabel; label.lang = language; });
+    document.querySelectorAll('[data-framework-caption]').forEach(caption => { caption.textContent = figure.caption; caption.lang = language; });
+    document.querySelectorAll('[data-framework-scope]').forEach(scope => { scope.textContent = figure.scope; scope.lang = language; });
+    document.querySelectorAll('[data-framework-download]').forEach(link => {
+      const format = link.dataset.frameworkDownload;
+      link.href = `${figure.path}.${format}`;
+      if (format==='svg') link.innerHTML = `SVG 원본 · ${figure.label}${icon('external')}`;
+      else link.textContent = `${format==='png'?'PNG 다운로드':'논문용 PDF'} · ${figure.label}`;
+    });
+  }
   function renderFramework(){
-    return `<section id="framework-section" class="framework-section card" aria-labelledby="framework-heading" tabindex="-1"><div class="framework-heading"><div><span class="eyebrow">FIGURE 1 · WEAVE FRAMEWORK</span><h2 id="framework-heading">프로젝트 전체 흐름</h2><p>웨어러블에서 로봇 학습까지, 네 단계와 병렬 준비 경로를 한눈에 확인합니다.</p></div><button type="button" class="button" data-framework-open>${icon('search')}확대 보기</button></div><figure class="framework-figure"><button type="button" class="framework-preview" data-framework-open aria-label="WEAVE 전체 프레임워크 그림 확대 보기" aria-describedby="framework-caption"><img src="${frameworkPath}.svg" width="1800" height="1140" alt="${frameworkAlt}" loading="lazy" decoding="async"></button><figcaption id="framework-caption"><strong>그림 1.</strong> 웨어러블 → RGB-D 수집 → 디컴포지션·정제·리타게팅 → 로봇 학습·평가. 벤치 파일럿과 공개 데이터로 선행 작업을 준비하고, 평가 결과를 재수집·개선으로 연결합니다.<span class="framework-scope">장치 이미지는 V10 CAD 참조이며, 전체 흐름은 제안 구조입니다. 로봇 플랫폼은 미정입니다.</span></figcaption></figure><div class="framework-downloads button-row">${frameworkDownloads()}</div></section>`;
+    const figure = frameworkVariants[frameworkLanguage];
+    return `<section id="framework-section" class="framework-section card" aria-labelledby="framework-heading" tabindex="-1"><div class="framework-heading"><div><span class="eyebrow">FIGURE 1 · WEAVE FRAMEWORK</span><h2 id="framework-heading">프로젝트 전체 흐름</h2><p>웨어러블에서 로봇 학습까지, 네 단계와 병렬 준비 경로를 한눈에 확인합니다.</p></div><div class="framework-actions">${frameworkLanguages()}<button type="button" class="button" data-framework-open>${icon('search')}확대 보기</button></div></div><figure class="framework-figure"><button type="button" class="framework-preview" data-framework-open aria-label="WEAVE 전체 프레임워크 그림 확대 보기" aria-describedby="framework-caption"><img data-framework-image src="${figure.path}.svg" width="1800" height="1140" lang="${frameworkLanguage}" alt="${figure.alt}" loading="lazy" decoding="async"></button><figcaption id="framework-caption"><strong data-framework-figure-label lang="${frameworkLanguage}">${figure.figureLabel}</strong> <span data-framework-caption lang="${frameworkLanguage}">${figure.caption}</span><span class="framework-scope" data-framework-scope lang="${frameworkLanguage}">${figure.scope}</span></figcaption></figure><div class="framework-downloads button-row">${frameworkDownloads()}<span class="framework-resolution">PNG 500 dpi · 벡터 PDF / SVG</span></div></section>`;
   }
   function showFramework(trigger){
+    const figure = frameworkVariants[frameworkLanguage];
     lastDialogTrigger=trigger;
     dialog.classList.add('framework-dialog');
-    document.getElementById('detail-content').innerHTML=`<div class="dialog-header"><div><span class="eyebrow">FIGURE 1</span><h2 id="detail-title">WEAVE 프로젝트 전체 흐름</h2></div><button type="button" class="close-button" data-close-dialog aria-label="상세 창 닫기">${icon('close')}</button></div><div class="framework-viewer-tools"><button type="button" class="button" data-framework-zoom aria-pressed="false" aria-controls="framework-viewport">원본 크기로 확대</button><span id="framework-viewer-hint">그림을 화면 너비에 맞춰 표시합니다.</span></div><div id="framework-viewport" class="framework-viewport" role="region" aria-label="프레임워크 그림, 확대 시 가로·세로 스크롤 가능" tabindex="0"><img src="${frameworkPath}.svg" width="1800" height="1140" alt="${frameworkAlt}"></div><div class="framework-dialog-footer"><p>V10 CAD 참조와 제안된 개발 흐름을 담은 개념도입니다. 로봇 플랫폼은 미정입니다.</p><div class="button-row">${frameworkDownloads()}</div></div>`;
+    document.getElementById('detail-content').innerHTML=`<div class="dialog-header"><div><span class="eyebrow">FIGURE 1</span><h2 id="detail-title">WEAVE 프로젝트 전체 흐름</h2></div><button type="button" class="close-button" data-close-dialog aria-label="상세 창 닫기">${icon('close')}</button></div><div class="framework-viewer-tools">${frameworkLanguages()}<button type="button" class="button" data-framework-zoom aria-pressed="false" aria-controls="framework-viewport">원본 크기로 확대</button><span id="framework-viewer-hint">그림을 화면 너비에 맞춰 표시합니다.</span></div><div id="framework-viewport" class="framework-viewport" role="region" aria-label="프레임워크 그림, 확대 시 가로·세로 스크롤 가능" tabindex="0"><img data-framework-image src="${figure.path}.svg" width="1800" height="1140" lang="${frameworkLanguage}" alt="${figure.alt}"></div><div class="framework-dialog-footer"><p data-framework-scope lang="${frameworkLanguage}">${figure.scope}</p><div class="button-row">${frameworkDownloads()}</div></div>`;
     dialog.showModal();
   }
 
@@ -224,6 +261,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = WEAVE_SCHE
   document.addEventListener('click',event=>{
     const skip=event.target.closest('.skip-link');if(skip){event.preventDefault();main.focus({preventScroll:true});main.scrollIntoView({behavior:'instant'});return;}
     const frameworkJump=event.target.closest('[data-framework-scroll]');if(frameworkJump){const section=document.getElementById('framework-section');section?.scrollIntoView({behavior:'instant',block:'start'});section?.focus({preventScroll:true});return;}
+    const frameworkLanguageButton=event.target.closest('[data-framework-language]');if(frameworkLanguageButton){setFrameworkLanguage(frameworkLanguageButton.dataset.frameworkLanguage);return;}
     const frameworkOpen=event.target.closest('[data-framework-open]');if(frameworkOpen){showFramework(frameworkOpen);return;}
     const frameworkZoom=event.target.closest('[data-framework-zoom]');if(frameworkZoom){const viewport=document.getElementById('framework-viewport');const zoomed=viewport.classList.toggle('is-zoomed');frameworkZoom.setAttribute('aria-pressed',String(zoomed));frameworkZoom.textContent=zoomed?'화면에 맞추기':'원본 크기로 확대';document.getElementById('framework-viewer-hint').textContent=zoomed?'가로·세로로 스크롤하여 세부 내용을 확인하세요.':'그림을 화면 너비에 맞춰 표시합니다.';viewport.scrollTo({left:0,top:0,behavior:'instant'});return;}
     const todayButton=event.target.closest('[data-gantt-today]');if(todayButton){const scroller=main.querySelector('.gantt-scroll'),table=main.querySelector('.gantt-table'),label=main.querySelector('.gantt-label');if(scroller&&table&&label&&todayButton.dataset.ganttToday){const labelWidth=label.getBoundingClientRect().width;const point=labelWidth+(table.scrollWidth-labelWidth)*Number(todayButton.dataset.ganttToday)/100;scroller.scrollTo({left:Math.max(0,point-labelWidth-(scroller.clientWidth-labelWidth)/2),behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}return;}
